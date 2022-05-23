@@ -1,7 +1,7 @@
 '''
 Epidemic modelling
 
-Doniyorbek Rakhmonberdiev
+Doniyorbek Rakhmonberdiev (21SE095)
 
 Functions for running a simple epidemiological simulation
 '''
@@ -24,10 +24,13 @@ def count_infected(city):
       currently infected
     '''
 
+    # YOUR CODE HERE
+
     num_of_infected = 0
+    
     for i in city:
-      if (i[0] == 'I'):
-        num_of_infected += 1
+        if (i[0] == 'I'):
+            num_of_infected += 1
     
     return num_of_infected
 
@@ -47,10 +50,13 @@ def has_an_infected_neighbor(city, position):
 
     # This function should only be called when the person at position
     # is susceptible to infection.
-    assert city[position] == "S"
-    
+    assert city[position] == 'S'
+
+    # YOUR CODE HERE
+
     p = position
     is_infected = False
+    
     if (len(city) > 1):
         if (p != 0 and p != len(city) - 1):
             if ((city[p-1][0] == 'I') or (city[p+1][0] == 'I')):
@@ -77,19 +83,21 @@ def advance_person_at_position(city, position, days_contagious):
 
     Returns: (string) disease state of the person after one day
     '''
-    a = city[position]
+
+    # YOUR CODE HERE
+
+    string = city[position]
     
-    if (city[position][0] == 'I'):
-        int(city[position][1:]) 
-#        if (city[position][1] == str(days_contagious - 1)):
-#            a = "R"
-#        else:
-        if (int(city[position]) < days_contagious - 1):
-            city[position] = "I" + str(int(city[position][1]) + 1)
-    elif (has_an_infected_neighbor(city, position)):
-        a = "I0"
+    if (string[0] == "I"):
+        x = int(string[1:])
+        if (x + 1 < days_contagious):
+            string = "I" + str(x + 1)
+        else:
+            string = "R"
+    elif (string == "S" and has_an_infected_neighbor(city, position)):
+        string = "I0"
     
-    return a
+    return string
 
 
 def simulate_one_day(starting_city, days_contagious):
@@ -106,9 +114,13 @@ def simulate_one_day(starting_city, days_contagious):
     '''
 
     # YOUR CODE HERE
-
-    # REPLACE None WITH THE APPROPRIATE LIST OF STRINGS
-    return None
+    
+    L = []
+    
+    for i in range(len(starting_city)):
+        L.append(advance_person_at_position(starting_city, i, days_contagious))    
+    
+    return L
 
 
 def run_simulation(starting_city, days_contagious,
@@ -130,12 +142,28 @@ def run_simulation(starting_city, days_contagious,
 
     # YOUR CODE HERE
 
+    run = False
+    num_of_days = 0
+    city = starting_city
+    
+    for i in city:
+        if (i != "S" and i != "R"):
+            run = True
+    while run:
+        city = simulate_one_day(city, days_contagious)
+        num_of_days += 1
+        run = False
+        for i in city:
+            if (i != "S" and i != "R"):
+                run = True
+    
     # REPLACE (None, None) WITH THE APPROPRIATE TUPLE
     #  (city, number of days simulated)
-    return (None, None)
+    
+    return (city, num_of_days)
 
 
-def vaccinate_city(starting_city, vaccine_effectiveness):
+def xvaccinate_city(starting_city, vaccine_effectiveness):
     '''
     Vaccinate everyone in a city
 
