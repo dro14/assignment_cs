@@ -23,7 +23,6 @@ def count_infected(city):
     Returns (int): count of the number of people who are
       currently infected
     '''
-
     # YOUR CODE HERE
     
     
@@ -33,6 +32,8 @@ def count_infected(city):
         if (i[0] == 'I'):
             num_of_infected += 1
     
+    
+    # REPLACE -1 WITH THE APPROPRIATE INTEGER
     return num_of_infected
 
 
@@ -48,7 +49,6 @@ def has_an_infected_neighbor(city, position):
     Returns:
       True, if the person has an infected neighbor, False otherwise.
     '''
-
     # This function should only be called when the person at position
     # is susceptible to infection.
     assert city[position] == 'S'
@@ -70,6 +70,8 @@ def has_an_infected_neighbor(city, position):
             if (city[p-1][0] == 'I'):
                 is_infected = True
     
+    
+    # REPLACE None WITH THE APPROPRIATE BOOLEAN VALUE
     return is_infected
 
 
@@ -119,12 +121,11 @@ def simulate_one_day(starting_city, days_contagious):
     # YOUR CODE HERE
     
     
-    L = []
-    
+    city = []
     for i in range(len(starting_city)):
-        L.append(advance_person_at_position(starting_city, i, days_contagious))    
+        city.append(advance_person_at_position(starting_city, i, days_contagious))    
     
-    return L
+    return city
 
 
 def run_simulation(starting_city, days_contagious,
@@ -148,22 +149,20 @@ def run_simulation(starting_city, days_contagious,
 
     
     num_of_days = 0
+    city = starting_city[:]
+    random.seed(random_seed)
     
-    run = False
-    for i in starting_city:
-        if (i != "S" and i != "R" and i != "V"):
-            run = True
     
-    while run:
-        starting_city = simulate_one_day(starting_city, days_contagious)
+    for i, elem in enumerate(city):
+        if (elem == 'S'):
+            if (random.random() < vaccine_effectiveness):
+                city[i] = 'V'
+    
+    while (count_infected(city) > 0):
+        city = simulate_one_day(city, days_contagious)
         num_of_days += 1
-        
-        run = False
-        for i in starting_city:
-            if (i != "S" and i != "R" and i != "V"):
-                run = True
     
-    return (starting_city, num_of_days)
+    return (city, num_of_days)
 
 
 def vaccinate_city(starting_city, vaccine_effectiveness):
@@ -182,13 +181,12 @@ def vaccinate_city(starting_city, vaccine_effectiveness):
 
     # YOUR CODE HERE    
     
-    city = starting_city[:]
     
+    city = starting_city[:]
     for i, elem in enumerate(city):
         if (elem == 'S'):
             if (random.random() < vaccine_effectiveness):
-                city[i] = 'V'
-                
+                city[i] = 'V'             
     return city
 
 
@@ -218,9 +216,16 @@ def calc_avg_days_to_zero_infections(
     assert num_trials > 0
 
     # YOUR CODE HERE
-
-    # REPLACE -1.0 WITH THE APPROPRIATE FLOATING POINT VALUE
-    return -1.0
+    
+    sum_of_days = 0
+    for i in range(num_trials):
+        tupl = run_simulation(starting_city, days_contagious, random_seed, vaccine_effectiveness)
+        sum_of_days += tupl[1]
+        random_seed += 1
+    average_days = sum_of_days/num_trials
+    
+    
+    return average_days
 
 
 ################ Do not change the code below this line #######################
