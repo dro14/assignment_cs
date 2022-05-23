@@ -25,7 +25,8 @@ def count_infected(city):
     '''
 
     # YOUR CODE HERE
-
+    
+    
     num_of_infected = 0
     
     for i in city:
@@ -53,7 +54,8 @@ def has_an_infected_neighbor(city, position):
     assert city[position] == 'S'
 
     # YOUR CODE HERE
-
+    
+    
     p = position
     is_infected = False
     
@@ -85,7 +87,8 @@ def advance_person_at_position(city, position, days_contagious):
     '''
 
     # YOUR CODE HERE
-
+    
+    
     string = city[position]
     
     if (string[0] == "I"):
@@ -115,6 +118,7 @@ def simulate_one_day(starting_city, days_contagious):
 
     # YOUR CODE HERE
     
+    
     L = []
     
     for i in range(len(starting_city)):
@@ -142,28 +146,27 @@ def run_simulation(starting_city, days_contagious,
 
     # YOUR CODE HERE
 
-    run = False
-    num_of_days = 0
-    city = starting_city
     
-    for i in city:
-        if (i != "S" and i != "R"):
+    num_of_days = 0
+    
+    run = False
+    for i in starting_city:
+        if (i != "S" and i != "R" and i != "V"):
             run = True
+    
     while run:
-        city = simulate_one_day(city, days_contagious)
+        starting_city = simulate_one_day(starting_city, days_contagious)
         num_of_days += 1
+        
         run = False
-        for i in city:
-            if (i != "S" and i != "R"):
+        for i in starting_city:
+            if (i != "S" and i != "R" and i != "V"):
                 run = True
     
-    # REPLACE (None, None) WITH THE APPROPRIATE TUPLE
-    #  (city, number of days simulated)
-    
-    return (city, num_of_days)
+    return (starting_city, num_of_days)
 
 
-def xvaccinate_city(starting_city, vaccine_effectiveness):
+def vaccinate_city(starting_city, vaccine_effectiveness):
     '''
     Vaccinate everyone in a city
 
@@ -177,10 +180,16 @@ def xvaccinate_city(starting_city, vaccine_effectiveness):
       new_city (list): state of the city after vaccinating everyone in the city
     '''
 
-    # YOUR CODE HERE
-
-    # REPLACE None WITH THE APPROPRIATE LIST OF STRINGS
-    return None
+    # YOUR CODE HERE    
+    
+    city = starting_city[:]
+    
+    for i, elem in enumerate(city):
+        if (elem == 'S'):
+            if (random.random() < vaccine_effectiveness):
+                city[i] = 'V'
+                
+    return city
 
 
 def calc_avg_days_to_zero_infections(
